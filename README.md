@@ -47,4 +47,5 @@ Iniciar Spark en otra terminal:
 El procesamiento por lotes se ejecutó sobre 8.354 registros y conservó la cantidad de registros tras la limpieza. El procesamiento en tiempo real mostró promedios por sensor y ventana. Los datos de sensores son simulados.
 
 ## Autoría
-Completar con los nombres de los integrantes que contribuyeron al proyecto.
+
+CamiloM
