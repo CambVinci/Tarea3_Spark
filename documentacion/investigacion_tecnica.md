@@ -154,3 +154,51 @@ Apache Software Foundation. (s. f.). *Structured Streaming Programming Guide*. h
 Apache Software Foundation. (s. f.). *Apache Kafka Documentation*. https://kafka.apache.org/documentation/
 
 Ministerio de Tecnologías de la Información y las Comunicaciones. (s. f.). *Datos Abiertos Colombia*. https://www.datos.gov.co/
+
+## 10. Propiedades y operaciones de los RDD
+
+### 10.1. Inmutabilidad y particionamiento
+
+Los RDD (Resilient Distributed Datasets) son colecciones distribuidas e inmutables. La inmutabilidad significa que sus elementos no se modifican directamente; cuando se aplica una transformación, Spark genera un nuevo RDD con el resultado de la operación.
+
+El particionamiento consiste en dividir los datos en partes que pueden procesarse de manera distribuida. Esto permite que diferentes tareas trabajen en paralelo y contribuye al procesamiento de grandes volúmenes de información.
+
+### 10.2. Transformaciones
+
+Las transformaciones crean nuevos RDD a partir de otros existentes:
+
+- `map()`: aplica una función a cada elemento y genera un resultado por elemento.
+- `filter()`: conserva los elementos que cumplen una condición.
+- `flatMap()`: permite generar cero o varios resultados por cada elemento.
+- `groupByKey()`: agrupa los valores asociados a cada clave.
+- `reduceByKey()`: combina los valores de cada clave mediante una función de reducción. Cuando es posible, realiza una combinación local antes de enviar los datos entre particiones.
+
+`groupByKey()` puede requerir un intercambio considerable de datos cuando existen muchos valores por clave. Si el objetivo es calcular una suma, un promedio u otra agregación, suele ser preferible utilizar `reduceByKey()` cuando corresponda.
+
+### 10.3. Acciones
+
+Las acciones permiten obtener resultados de las operaciones realizadas sobre un RDD:
+
+- `collect()`: devuelve todos los elementos al programa controlador. Debe utilizarse con precaución cuando el conjunto de datos es grande.
+- `count()`: devuelve el número de elementos.
+- `take(n)`: devuelve los primeros n elementos.
+- `reduce()`: combina los elementos mediante una función que recibe dos valores y devuelve un resultado combinado.
+
+Las transformaciones permiten definir el procesamiento, mientras que las acciones solicitan resultados y desencadenan la ejecución de las operaciones pendientes.
+
+## 11. Arquitectura de Apache Kafka
+
+### 11.1. Diagrama de arquitectura
+
+El siguiente diagrama representa el flujo de datos utilizado en el proyecto:
+
+```mermaid
+flowchart LR
+    A[Productor de sensores] --> B[Kafka Broker]
+    B --> C[Topic: sensor_data]
+    C --> D[Partición 0]
+    C --> E[Partición 1]
+    D --> F[Consumidor Spark Structured Streaming]
+    E --> F
+    F --> G[Procesamiento y ventanas temporales]
+    G --> H[Promedios por sensor]
